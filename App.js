@@ -3,40 +3,17 @@ import { StyleSheet, View, FlatList, Button } from "react-native";
 import GoalInput from "./components/GoalInput";
 import GoalItem from "./components/GoalItem";
 import { StatusBar } from "expo-status-bar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [enteredGoalText, setEnteredGoalText] = useState("");
   const [courseGoals, setCourseGoals] = useState([]);
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
-  const storeData = async (value) => {
-    try {
-      const jsonGoals = JSON.stringify(value);
-      await AsyncStorage.setItem("goals", jsonGoals);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getData = async () => {
-    try {
-      const goals = await AsyncStorage.getItem("goals");
-      const jsonGoalsLoad = JSON.parse(goals);
-      if (jsonGoalsLoad !== null) {
-        setCourseGoals(jsonGoalsLoad);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const startAddGoalHandler = () => {
     setModalIsVisible(true);
   };
 
   const endAddGoalHandler = () => {
-    storeData(courseGoals);
     setModalIsVisible(false);
   };
 
@@ -53,15 +30,6 @@ export default function App() {
       return currentCourseGoals.filter((goal) => goal.id !== id);
     });
   };
-
-  useEffect(() => {
-    storeData(courseGoals);
-    getData();
-  }, [modalIsVisible]);
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <>
